@@ -1,7 +1,7 @@
 # TinyCrypto
 A tiny collection of essential crypto algorithms for Qt 4.x and up.
 
-***Note:** **This library is intended for light use cases and does not replace a full-fledged and optimized crypto library** like Botan, (Libre|Open)SSL or Crypto++.*
+**Note: This library is intended for light use cases and does not replace a full-fledged and optimized crypto library** like Botan, Libre-/OpenSSL or Crypto++.
 
 This library includes
 
