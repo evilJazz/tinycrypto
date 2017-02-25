@@ -3,6 +3,7 @@
  Copyright (c) 1998-2008, Brian Gladman, Worcester, UK. All rights reserved.
  Copyright (c) 2013, Igor Saric. All rights reserved.
  Copyright (c) 2014-2017, Andre Beckedorf, Oldenburg, Germany. All rights reserved.
+ Copyright (c) 2014-2017, Wincent Balin, Oldenburg, Germany. All rights reserved.
 
  LICENSE TERMS
 
