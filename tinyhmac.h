@@ -36,13 +36,26 @@
 #define TINYHMAC_H
 
 #include <QByteArray>
+#include <QObject>
 #include <QCryptographicHash>
 
-class TinyHMAC
+#ifdef KCL_filesystemutils
+#include "KCL/filesystemutils.h"
+#endif
+
+class TinyHMAC : public QObject
 {
+    Q_OBJECT
 public:
-    static QByteArray hash(const QByteArray &input, const QByteArray &key, QCryptographicHash::Algorithm algorithm, int blockSize = 64);
-    static bool isEqual(const QByteArray &hash1, const QByteArray &hash2);
+    Q_INVOKABLE static QByteArray hash(const QByteArray &input, const QByteArray &key, QCryptographicHash::Algorithm algorithm, int blockSize = 64);
+    Q_INVOKABLE static bool isEqual(const QByteArray &hash1, const QByteArray &hash2);
+
+#ifdef KCL_filesystemutils
+    Q_INVOKABLE static QByteArray hash(const QByteArray &input, const QByteArray &key, CryptographicHash::Algorithm algorithm, int blockSize = 64)
+    {
+        return hash(input, key, (QCryptographicHash::Algorithm)algorithm, blockSize);
+    }
+#endif
 };
 
 #endif // TINYHMAC_H

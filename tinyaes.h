@@ -31,14 +31,20 @@
 #define TINYAES_H
 
 #include <QByteArray>
+#include <QObject>
 #include <QString>
 #include <QIODevice>
+
+#ifdef KCL_filesystemutils
+#include "KCL/filesystemutils.h"
+#endif
 
 // ECB is not enabled by default because it should never be used!
 //#define ENABLE_MODE_ECB 1
 
-class TinyAES
+class TinyAES : public QObject
 {
+    Q_OBJECT
 public:
 #ifdef ENABLE_MODE_ECB
     enum Mode
@@ -46,29 +52,42 @@ public:
         CBC,
         ECB
     };
+    Q_ENUMS(Mode)
 
-    static QByteArray encrypt(const QByteArray &input, const QByteArray &key, const Mode mode = CBC);
-    static QByteArray decrypt(QByteArray input, const QByteArray &key, const Mode mode = CBC);
+    Q_INVOKABLE static QByteArray encrypt(const QByteArray &input, const QByteArray &key, const Mode mode = CBC);
+    Q_INVOKABLE static QByteArray decrypt(QByteArray input, const QByteArray &key, const Mode mode = CBC);
 #else
-    static QByteArray encrypt(const QByteArray &input, const QByteArray &key);
-    static QByteArray decrypt(QByteArray input, const QByteArray &key);
+    Q_INVOKABLE static QByteArray encrypt(const QByteArray &input, const QByteArray &key);
+    Q_INVOKABLE static QByteArray decrypt(QByteArray input, const QByteArray &key);
 #endif
-    static QByteArray encrypt(QByteArray input, const QByteArray &key, const QByteArray &iv);
-    static QByteArray decrypt(const QByteArray &input, const QByteArray &key, const QByteArray &iv);
+    Q_INVOKABLE static QByteArray encrypt(QByteArray input, const QByteArray &key, const QByteArray &iv);
+    Q_INVOKABLE static QByteArray decrypt(const QByteArray &input, const QByteArray &key, const QByteArray &iv);
 
 #ifdef ENABLE_MODE_ECB
-    static bool encrypt(QIODevice *input, QIODevice *output, const QByteArray &key, const Mode mode = CBC);
-    static bool decrypt(QIODevice *input, QIODevice *output, const QByteArray &key, const Mode mode = CBC);
+    Q_INVOKABLE static bool encrypt(QIODevice *input, QIODevice *output, const QByteArray &key, const Mode mode = CBC);
+    Q_INVOKABLE static bool decrypt(QIODevice *input, QIODevice *output, const QByteArray &key, const Mode mode = CBC);
 #else
-    static bool encrypt(QIODevice *input, QIODevice *output, const QByteArray &key);
-    static bool decrypt(QIODevice *input, QIODevice *output, const QByteArray &key);
+    Q_INVOKABLE static bool encrypt(QIODevice *input, QIODevice *output, const QByteArray &key);
+    Q_INVOKABLE static bool decrypt(QIODevice *input, QIODevice *output, const QByteArray &key);
 #endif
-    static bool encrypt(QIODevice *input, QIODevice *output, const QByteArray &key, const QByteArray &iv);
-    static bool decrypt(QIODevice *input, QIODevice *output, const QByteArray &key, const QByteArray &iv);
+    Q_INVOKABLE static bool encrypt(QIODevice *input, QIODevice *output, const QByteArray &key, const QByteArray &iv);
+    Q_INVOKABLE static bool decrypt(QIODevice *input, QIODevice *output, const QByteArray &key, const QByteArray &iv);
 
-    static QByteArray hexStringToByte(QString key);
+#ifdef KCL_filesystemutils
+#ifdef ENABLE_MODE_ECB
+    Q_INVOKABLE static bool encrypt(IODevice *input, IODevice *output, const QByteArray &key, const Mode mode = CBC)  { return encrypt(input->device(), output->device(), key, mode); }
+    Q_INVOKABLE static bool decrypt(IODevice *input, IODevice *output, const QByteArray &key, const Mode mode = CBC)  { return encrypt(input->device(), output->device(), key, mode); }
+#else
+    Q_INVOKABLE static bool encrypt(IODevice *input, IODevice *output, const QByteArray &key) { return encrypt(input->device(), output->device(), key); }
+    Q_INVOKABLE static bool decrypt(IODevice *input, IODevice *output, const QByteArray &key) { return decrypt(input->device(), output->device(), key); }
+#endif
+    Q_INVOKABLE static bool encrypt(IODevice *input, IODevice *output, const QByteArray &key, const QByteArray &iv) { return encrypt(input->device(), output->device(), key, iv); }
+    Q_INVOKABLE static bool decrypt(IODevice *input, IODevice *output, const QByteArray &key, const QByteArray &iv) { return decrypt(input->device(), output->device(), key, iv); }
+#endif
 
-    static QByteArray getRandom128Bits();
+    Q_INVOKABLE static QByteArray hexStringToByte(QString key);
+
+    Q_INVOKABLE static QByteArray getRandom128Bits();
 
 private:
     static bool checkParams(const QByteArray &key, const QByteArray &iv);

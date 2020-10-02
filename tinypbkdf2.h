@@ -36,12 +36,26 @@
 #define TINYPBKDF2_H
 
 #include <QByteArray>
+#include <QObject>
 #include <QCryptographicHash>
 
-class TinyPBKDF2
+#ifdef KCL_filesystemutils
+#include "KCL/filesystemutils.h"
+#endif
+
+class TinyPBKDF2 : public QObject
 {
+    Q_OBJECT
 public:
     static QByteArray derive(const QByteArray &password, const QByteArray &salt, QCryptographicHash::Algorithm algorithm, int dstKeyLength, int iterations = 5000);
+
+#ifdef KCL_filesystemutils
+    Q_INVOKABLE static QByteArray derive(const QByteArray &password, const QByteArray &salt, CryptographicHash::Algorithm algorithm, int dstKeyLength, int iterations = 5000)
+    {
+        return derive(password, salt, (QCryptographicHash::Algorithm)algorithm, dstKeyLength, iterations);
+    }
+#endif
+
 };
 
 #endif // TINYPBKDF2_H
